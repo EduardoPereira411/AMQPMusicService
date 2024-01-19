@@ -1,0 +1,10 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="DeviceCommandModuleApplication1" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot">
+    <option name="ACTIVE_PROFILES" value="bootstrap" />
+    <module name="DeviceCommandModule" />
+    <option name="SPRING_BOOT_MAIN_CLASS" value="com.device.DeviceCommandModule.DeviceCommandModuleApplication" />
+    <method v="2">
+      <option name="Make" enabled="true" />
+    </method>
+  </configuration>
+</component>

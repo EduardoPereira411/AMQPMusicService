@@ -1,0 +1,10 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="PlanCommandModuleApplication1" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot">
+    <option name="ACTIVE_PROFILES" value="bootstrap" />
+    <module name="PlanCommandModule" />
+    <option name="SPRING_BOOT_MAIN_CLASS" value="com.plan.PlanCommandModule.PlanCommandModuleApplication" />
+    <method v="2">
+      <option name="Make" enabled="true" />
+    </method>
+  </configuration>
+</component>

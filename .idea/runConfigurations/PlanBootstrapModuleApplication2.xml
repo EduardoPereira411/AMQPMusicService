@@ -1,0 +1,22 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="PlanBootstrapModuleApplication2" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot">
+    <option name="ACTIVE_PROFILES" value="BOOT" />
+    <additionalParameters>
+      <param>
+        <option name="enabled" value="true" />
+        <option name="name" value="server.port" />
+        <option name="value" value="8501" />
+      </param>
+      <param>
+        <option name="enabled" value="true" />
+        <option name="name" value="spring.datasource.url" />
+        <option name="value" value="jdbc:h2:~/SidisBD/planInstances/Bootstraps/bootstrap2;MV_STORE=FALSE;AUTO_SERVER=true;" />
+      </param>
+    </additionalParameters>
+    <module name="PlanBootstrapModule" />
+    <option name="SPRING_BOOT_MAIN_CLASS" value="com.plan.PlanBootstrapModule.PlanBootstrapModuleApplication" />
+    <method v="2">
+      <option name="Make" enabled="true" />
+    </method>
+  </configuration>
+</component>

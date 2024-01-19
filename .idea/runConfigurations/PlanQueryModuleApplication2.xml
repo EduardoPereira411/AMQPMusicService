@@ -1,0 +1,22 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="PlanQueryModuleApplication2" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot">
+    <option name="ACTIVE_PROFILES" value="bootstrap" />
+    <additionalParameters>
+      <param>
+        <option name="enabled" value="true" />
+        <option name="name" value="server.port" />
+        <option name="value" value="8130" />
+      </param>
+      <param>
+        <option name="enabled" value="true" />
+        <option name="name" value="spring.datasource.url" />
+        <option name="value" value="jdbc:h2:~/SidisBD/planInstances/Queries/query2;MV_STORE=FALSE;AUTO_SERVER=true;" />
+      </param>
+    </additionalParameters>
+    <module name="PlanQueryModule" />
+    <option name="SPRING_BOOT_MAIN_CLASS" value="com.plan.PlanQueryModule.PlanQueryModuleApplication" />
+    <method v="2">
+      <option name="Make" enabled="true" />
+    </method>
+  </configuration>
+</component>

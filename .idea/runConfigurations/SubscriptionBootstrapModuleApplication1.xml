@@ -1,0 +1,9 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="SubscriptionBootstrapModuleApplication1" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot">
+    <module name="SubscriptionBootstrapModule" />
+    <option name="SPRING_BOOT_MAIN_CLASS" value="com.subscription.SubscriptionBootstrapModule.SubscriptionBootstrapApplication" />
+    <method v="2">
+      <option name="Make" enabled="true" />
+    </method>
+  </configuration>
+</component>

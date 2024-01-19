@@ -1,0 +1,11 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="UserCommandModuleApplication1" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot">
+    <option name="ACTIVE_PROFILES" value="bootstrap" />
+    <option name="ALTERNATIVE_JRE_PATH" value="17" />
+    <module name="UserCommandModule" />
+    <option name="SPRING_BOOT_MAIN_CLASS" value="com.user.UserCommandModule.UserCommandModuleApplication" />
+    <method v="2">
+      <option name="Make" enabled="true" />
+    </method>
+  </configuration>
+</component>

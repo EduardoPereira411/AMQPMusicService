@@ -1,0 +1,21 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="SubscriptionBootstrapModuleApplication2" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot">
+    <additionalParameters>
+      <param>
+        <option name="enabled" value="true" />
+        <option name="name" value="server.port" />
+        <option name="value" value="8801" />
+      </param>
+      <param>
+        <option name="enabled" value="true" />
+        <option name="name" value="spring.datasource.url" />
+        <option name="value" value="jdbc:h2:~/SidisBD/subscriptionInstances/Bootstraps/bootstrap2;MV_STORE=FALSE;AUTO_SERVER=true;" />
+      </param>
+    </additionalParameters>
+    <module name="SubscriptionBootstrapModule" />
+    <option name="SPRING_BOOT_MAIN_CLASS" value="com.subscription.SubscriptionBootstrapModule.SubscriptionBootstrapApplication" />
+    <method v="2">
+      <option name="Make" enabled="true" />
+    </method>
+  </configuration>
+</component>

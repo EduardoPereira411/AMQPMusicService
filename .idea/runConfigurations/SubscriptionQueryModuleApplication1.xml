@@ -1,0 +1,10 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="SubscriptionQueryModuleApplication1" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot">
+    <option name="ACTIVE_PROFILES" value="bootstrap" />
+    <module name="SubscriptionQueryModule" />
+    <option name="SPRING_BOOT_MAIN_CLASS" value="com.subscription.SubscriptionQueryModule.SubscriptionQueryModuleApplication" />
+    <method v="2">
+      <option name="Make" enabled="true" />
+    </method>
+  </configuration>
+</component>
