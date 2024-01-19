@@ -1,0 +1,54 @@
+@startuml
+'https://plantuml.com/sequence-diagram
+autoactivate on
+autonumber
+
+title Define Plan N3
+
+actor "MarketingDirector" as User
+
+box "Plan Command"
+    participant ":PlanController" as Ctrl
+    participant ":PlanService" as Service
+    participant ":Plan" as Plan
+    participant ":PlanRepository" as Repo
+end box
+
+participant ":MessageBroker" as MB
+
+
+
+activate User
+
+
+        User -> Ctrl: POST: api/plan body:CreatePlanRequest
+        Ctrl -> Service: create(CreatePlanRequest)
+        Service -> Repo:findPlanByName(planName)
+        Repo -> Repo: findPlanByNameLocal(planName)
+        Repo --> Repo: empty
+        Repo --> Service: empty
+
+        Service -> Repo: getPlanByNameOnOtherInstance(planName)
+
+        Repo --> Service: ok
+        Service -> Plan**: create(CreatePlanRequest)
+        Plan -->Service:plan
+        Service->Repo: save(plan)
+        Repo->Repo:save(plan)
+        Repo-->Repo:plan
+        Repo-->Service: plan
+        Service --> Ctrl: plan
+        Ctrl -> MB: publish{"plan.created.*, plan"}
+
+
+
+
+
+Ctrl --> User: 200 OK
+
+
+
+
+
+
+@enduml

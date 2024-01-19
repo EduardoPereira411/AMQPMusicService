@@ -1,0 +1,15 @@
+@startuml
+'https://plantuml.com/sequence-diagram
+autoactivate on
+autonumber
+
+actor "Subscriber" as Subscriber
+participant ":DevicesQ" as DevicesQ
+
+Subscriber -> DevicesQ: GET: api/device/all
+
+DevicesQ -> DevicesQ: findAllFromLoggedInUser()
+
+DevicesQ --> Subscriber: 200 / devices
+
+@enduml

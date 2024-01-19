@@ -1,0 +1,38 @@
+@startuml
+'https://plantuml.com/sequence-diagram
+autoactivate on
+autonumber
+
+actor "Subscriber" as Subscriber
+
+box "DeviceC"
+    participant ":DeviceController" as Ctrl
+    participant ":DeviceService" as Service
+    participant ":Device" as Device
+    participant ":DeviceRepository" as Repo
+    participant ":SubscriptionRepository" as subRepo
+    participant ":MessageBroker" as MessageBroker
+end box
+participant "DeviceQ" as DeviceQ
+
+
+activate Subscriber
+
+        Subscriber -> Ctrl: PATCH: api/device/{devID} body:HttpServletRequest, EditDeviceRequest, devID
+        Ctrl -> Service: updateDev(HttpServletRequest, EditDeviceRequest, devID,version)
+        Service -> subRepo:getSubInfoByUser (userID)
+        subRepo --> Service: sub
+        Service -> Repo: findByDevIDAndSubscriptionUUID(devID, subID)
+        Repo --> Service: device
+        Service -> Device: updateData(version,designation)
+        Device --> Service: device
+        Service -> Repo: save(device)
+        Repo->Repo:save(device)
+        Repo-->Service: device
+        Service --> Ctrl: device
+        Ctrl -> MessageBroker:sendUpdatedDevice(updatedDev)
+        MessageBroker -> DevicesQ:notify{device_updated, updatedDev}
+        DevicesQ -> DevicesQ:updateDeviceAMQP(updatedDev)
+        Ctrl --> Subscriber: 200 OK
+
+@enduml

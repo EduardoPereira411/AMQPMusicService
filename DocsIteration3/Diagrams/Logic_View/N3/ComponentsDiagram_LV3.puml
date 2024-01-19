@@ -1,0 +1,76 @@
+@startuml
+title "Component Diagram N3"
+
+component "<< System >>  " {
+  [PlansQ]
+  Port "Pq"
+
+  [PlansC]
+  Port "Pc"
+
+  [SubscriptionsQ]
+  Port "Sq"
+
+  [SubscriptionsC]
+  Port "Sc"
+
+  [DevicesQ]
+  Port "Dq"
+
+  [DevicesC]
+  Port "Dc"
+
+  [UsersQ]
+  Port "Uq"
+
+  [UsersC]
+  Port "Uc"
+
+
+ [MessageBroker] -- Publish_API
+
+
+}
+
+
+API_Rest_PlansQ -- "Pq"
+"Pq" -- [PlansQ]
+API_Rest_PlansC -- "Pc"
+"Pc" -- [PlansC]
+
+API_Rest_DevicesQ -- "Dq"
+"Dq" -- [DevicesQ]
+API_Rest_DevicesC -- "Dc"
+"Dc" -- [DevicesC]
+
+API_Rest_SubscriptionsQ -- "Sq"
+"Sq" -- [SubscriptionsQ]
+API_Rest_SubscriptionsC -- "Sc"
+"Sc" -- [SubscriptionsC]
+
+API_Rest_UsersQ -- "Uq"
+"Uq" -- [UsersQ]
+API_Rest_UsersC -- "Uc"
+"Uc" -- [UsersC]
+
+[PlansQ] --(0-- [MessageBroker] : Notify API
+[PlansC] --(0-- [MessageBroker] : Notify API
+[SubscriptionsQ] --(0-- [MessageBroker] : Notify API
+[SubscriptionsC] --(0-- [MessageBroker] : Notify API
+[DevicesQ] --(0-- [MessageBroker] : Notify API
+[DevicesC] --(0-- [MessageBroker] : Notify API
+[UsersQ] --(0-- [MessageBroker] : Notify API
+[UsersC] --(0-- [MessageBroker] : Notify API
+
+
+
+[PlansQ] -( Publish_API
+[PlansC] -( Publish_API
+[SubscriptionsQ] -( Publish_API
+[SubscriptionsC] -( Publish_API
+[DevicesQ] -( Publish_API
+[DevicesC] -( Publish_API
+[UsersQ] -( Publish_API
+[UsersC] -( Publish_API
+
+@enduml

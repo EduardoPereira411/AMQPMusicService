@@ -1,0 +1,37 @@
+@startuml
+'https://plantuml.com/sequence-diagram
+autoactivate on
+autonumber
+title BonusPlan_N3
+
+actor "MarketingDirector" as MarketingDirector
+participant ":PlansC" as PlansC
+participant ":SubscriptionsC" as SubscriptionsC
+participant ":MessageBroker" as MB
+
+activate MarketingDirector
+
+
+MarketingDirector -> PlansC: POST: /api/plan/{userId} body:CreatePlanRequest
+
+PlansC -> MB:sendAskCreateBonusPlan(BonusPlanRequest)
+
+MB -->SubscriptionsC:notify{BonusPlanRequest}
+SubscriptionsC -> MB:publish{"sub.created.*, newBonusSub"}
+
+SubscriptionsC --> PlansC: true
+PlansC -> MB:publish{"plan.created.*, plan"}
+PlansC --> MarketingDirector: 200 OK
+
+
+...
+
+MB --> PlansC:notify{plan}
+MB --> SubscriptionsC:notify{newBonusSub}
+
+
+
+
+
+@enduml
+

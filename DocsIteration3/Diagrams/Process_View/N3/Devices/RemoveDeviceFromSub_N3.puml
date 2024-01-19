@@ -1,0 +1,34 @@
+@startuml
+'https://plantuml.com/sequence-diagram
+autoactivate on
+autonumber
+
+actor "Subscriber" as Subscriber
+
+box "DeviceC"
+    participant ":DeviceController" as Ctrl
+    participant ":DeviceService" as Service
+    participant ":Device" as Device
+    participant ":DeviceRepository" as Repo
+    participant ":SubscriptionRepository" as subRepo
+    participant ":MessageBroker" as MessageBroker
+end box
+participant "DeviceQ" as DeviceQ
+
+
+activate Subscriber
+
+        Subscriber -> Ctrl: DELETE: api/device/{devID} body:HttpServletRequest, devID
+        Ctrl -> Service: deleteByIdOnSub(devID, request)
+        Service -> subRepo:getSubInfoByUser (userID)
+        subRepo --> Service: sub
+        Service --> Repo:deleteByDevIDOnSubscription(devID, subscriptionUUID)
+        Repo->Repo: DELETE
+        Repo -->Service: count
+        Service -->Ctrl: count
+
+        Ctrl -> MessageBroker:sendDeletedDevice(devID)
+        MessageBroker -> DevicesQ:notify{device_deleted, devID}
+        DevicesQ -> DevicesQ:deleteDevice(devID)
+        Ctrl --> Subscriber: 200 OK Count
+@enduml

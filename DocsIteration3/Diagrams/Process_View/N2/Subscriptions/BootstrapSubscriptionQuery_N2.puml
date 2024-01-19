@@ -1,0 +1,26 @@
+@startuml
+'https://plantuml.com/sequence-diagram
+
+title Bootstrap Subscription Query N2
+
+autoactivate on
+autonumber
+
+participant ":SubscriptionQ" as SubscriptionQ
+participant ":bootstrapSubscriptions" as bootS
+participant ":bootstrapPlans" as bootP
+participant ":bootstrapUsers" as bootU
+participant ":messageBroker" as MB
+
+note over SubscriptionQ: on initialization
+SubscriptionQ -> MB: publish{"subscription.bootstrap", "bootstrap.key"}
+MB --> bootS: notify{subscriptions}
+bootS -> MB: subscriptions
+MB--> SubscriptionQ: subscriptions
+
+SubscriptionQ -> MB: publish{"plan.bootstrap", "bootstrap.key"}
+MB --> bootP: notify{plans}
+bootP -> MB: plans
+MB--> SubscriptionQ: plans
+
+@enduml

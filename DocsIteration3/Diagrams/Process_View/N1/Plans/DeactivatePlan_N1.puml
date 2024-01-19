@@ -1,0 +1,17 @@
+@startuml
+'https://plantuml.com/sequence-diagram
+
+title Deactivate Plan N1
+
+autoactivate on
+autonumber
+
+actor "MarketingDirector" as MarketingDirector
+participant ":PlanC" as PlanC
+
+
+activate MarketingDirector
+
+MarketingDirector -> PlanC: PATCH /api/plan/deactivate/{planName}
+PlanC --> MarketingDirector: 200 OK
+@enduml

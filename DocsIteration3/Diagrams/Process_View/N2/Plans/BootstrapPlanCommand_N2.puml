@@ -1,0 +1,21 @@
+@startuml
+'https://plantuml.com/sequence-diagram
+
+title BootstrapPlanCommand_N2
+
+autoactivate on
+autonumber
+
+participant ":PlanCommand" as PlanCommand
+participant ":bootstrapPlans" as bootP
+
+participant ":messageBroker" as MB
+
+note over PlanCommand: on initialization
+PlanCommand -> MB: publish{"plan.bootstrap", "bootstrap.key"}
+MB --> bootP: notify{plans}
+bootP -> MB: plans
+MB--> PlanCommand: plans
+
+
+@enduml

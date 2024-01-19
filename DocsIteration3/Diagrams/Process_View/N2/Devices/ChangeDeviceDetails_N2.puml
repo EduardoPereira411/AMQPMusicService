@@ -1,0 +1,35 @@
+@startuml
+'https://plantuml.com/sequence-diagram
+autoactivate on
+autonumber
+
+actor "Subscriber" as Subscriber
+participant ":DevicesC" as DevicesC
+participant ":DevicesQ" as DevicesQ
+'/participant ":SubscriptionsQ" as SubscriptionsQ
+'/participant ":SubscriptionsC" as SubscriptionsC
+participant ":MessageBroker" as MB
+
+
+Subscriber -> DevicesC: PATCH: api/device/devID {device:designation,device:devID}
+
+DevicesC -> DevicesC: updateDevice(designation,devID)
+DevicesC -> MB: publish{"device.updated.*, device"}
+
+MB -> DevicesC:notify{device_updated, device:designation, device:devID}
+DevicesC -> DevicesC:updateDevice(designation,devID)
+
+MB -> DevicesQ:notify{device_updated, device:designation, device:devID}
+DevicesQ -> DevicesQ:updateDevice(designation,devID)
+
+'/MB -> SubscriptionsQ:notify{device_updated, device:designation, device:devID}
+'/SubscriptionsQ -> SubscriptionsQ:updateDevice(designation,devID)
+
+'/MB -> SubscriptionsC:notify{device_updated, device:designation, device:devID}
+'/SubscriptionsC -> SubscriptionsC:updateDevice(designation,devID)
+
+
+
+DevicesC --> Subscriber: 200 OK
+
+@enduml

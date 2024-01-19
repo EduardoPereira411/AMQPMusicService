@@ -1,0 +1,30 @@
+@startuml
+'https://plantuml.com/sequence-diagram
+
+title Bootstrap Device Command N2
+
+autoactivate on
+autonumber
+
+participant ":DeviceC" as DeviceC
+participant ":bootstrapDevices" as bootD
+participant ":bootstrapPlans" as bootP
+participant ":bootstrapSubscriptions" as bootS
+participant ":messageBroker" as MB
+
+note over DeviceC: on initialization
+DeviceC -> MB: publish{"device.bootstrap", "bootstrap.key"}
+MB --> bootD: notify{devices}
+bootD -> MB: devices
+MB--> DeviceC: devices
+
+DeviceC -> MB: publish{"subscription.bootstrap", "bootstrap.key"}
+MB --> bootS: notify{subscriptions}
+bootS -> MB: subscriptions
+MB--> DeviceC: subscriptions
+
+DeviceC -> MB: publish{"plan.bootstrap", "bootstrap.key"}
+MB --> bootP: notify{plans}
+bootP -> MB: plan
+MB--> DeviceC: plans
+@enduml

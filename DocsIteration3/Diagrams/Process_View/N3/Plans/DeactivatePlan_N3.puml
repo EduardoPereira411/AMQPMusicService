@@ -1,0 +1,52 @@
+@startuml
+'https://plantuml.com/sequence-diagram
+autoactivate on
+autonumber
+
+title Deactivate Plan N3
+
+actor "MarketingDirector" as User
+
+box "Plan Command"
+    participant ":PlanController" as Ctrl
+    participant ":PlanService" as Service
+    participant ":Plan" as Plan
+    participant ":PlanRepository" as Repo
+
+end box
+
+   participant ":MessageBroker" as MB
+
+
+
+activate User
+
+
+        User -> Ctrl: PATCH: api/plan/{planName}
+        Ctrl -> Service: deactivate(planName, version)
+        Service -> Repo:findPlanIfActiveByName(planName)
+        Repo -> Repo: findPlanIfActiveByNameLocal(planName)
+        Repo --> Repo: plan
+        Repo --> Service: plan
+
+        Service->Plan: deactivatePlan(version)
+        Plan--> Service: plan
+        Service->Repo: save(plan)
+        Repo->Repo:save(plan)
+        Repo-->Repo:plan
+        Repo-->Service: plan
+        Service --> Ctrl: plan
+
+
+         Ctrl -> MB: publish{"plan.update.*, plan"}
+
+
+
+        Ctrl --> User: 200 OK plan
+
+
+
+
+
+
+@enduml

@@ -1,0 +1,34 @@
+@startuml
+title "Component Diagram N1"
+
+component "<< System >>  " {
+
+  Port "Pq"
+  Port "Pc"
+
+  Port "Sq"
+  Port "Sc"
+
+  Port "Dq"
+  Port "Dc"
+
+  Port "Uq"
+  Port "Uc"
+
+}
+
+
+API_Rest_PlansQ -- "Pq"
+API_Rest_PlansC -- "Pc"
+API_Rest_DevicesQ -- "Dq"
+API_Rest_DevicesC -- "Dc"
+API_Rest_SubscriptionsQ -- "Sq"
+API_Rest_SubscriptionsC -- "Sc"
+API_Rest_UsersQ -- "Uq"
+API_Rest_UsersC -- "Uc"
+
+
+
+
+
+@enduml

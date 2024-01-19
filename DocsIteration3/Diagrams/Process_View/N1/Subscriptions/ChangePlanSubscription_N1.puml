@@ -1,0 +1,17 @@
+@startuml
+'https://plantuml.com/sequence-diagram
+
+title Change Plan Subscription N1
+
+autoactivate on
+autonumber
+
+actor "Subscriber" as Subscriber
+participant ":SubscriptionC" as SubscriptionC
+
+
+activate Subscriber
+
+Subscriber -> SubscriptionC: PATCH /api/subscription/
+SubscriptionC --> Subscriber: 200 OK
+@enduml

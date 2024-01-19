@@ -1,0 +1,17 @@
+@startuml
+'https://plantuml.com/sequence-diagram
+
+title Define Plan N1
+
+autoactivate on
+autonumber
+
+actor "MarketingDirector" as MarketingDirector
+participant ":PlanC" as PlanC
+
+
+activate MarketingDirector
+
+MarketingDirector -> PlanC: POST /api/plan body:CreatePlanRequest
+PlanC --> MarketingDirector: 201 Create
+@enduml

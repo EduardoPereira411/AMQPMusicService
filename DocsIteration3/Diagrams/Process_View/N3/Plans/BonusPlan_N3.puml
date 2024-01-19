@@ -1,0 +1,85 @@
+@startuml
+'https://plantuml.com/sequence-diagram
+autoactivate on
+autonumber
+
+title BonusPlan_N3
+
+actor "MarketingDirector" as User
+
+box "Plan Command"
+    participant ":PlanController" as Ctrl
+    participant ":PlanService" as Service
+    participant ":Plan" as Plan
+    participant ":PlanRepository" as Repo
+end box
+
+box "Subscription Command"
+    participant ":SubscriptionController" as CtrlS
+    participant ":SubscriptionService" as ServiceS
+    participant ":Subscription" as Subscription
+    participant ":SubscriptionRepository" as RepoS
+end box
+
+participant ":MessageBroker" as MB
+
+
+
+activate User
+
+
+        User -> Ctrl: POST: /api/plan/{userId} body:CreatePlanRequest
+        Ctrl -> Service: createBonusPlan(CreatePlanRequest)
+        Service -> Repo:findPlanByName(planName)
+        Repo -> Repo: findPlanByNameLocal(planName)
+        Repo --> Repo: empty
+        Repo --> Service: empty
+
+
+
+
+        Service -> Plan**: create(CreatePlanRequest)
+        Plan -->Service:plan
+        Service->Repo: save(plan)
+        Repo->Repo:save(plan)
+        Repo-->Repo:plan
+        Repo-->Service: plan
+        Service --> Ctrl: plan
+
+
+
+
+
+
+        Ctrl -> MB: sendAskCreateBonusPlan(BonusPlanRequest)
+        MB --> CtrlS : notify{BonusPlanRequest}
+        CtrlS -> ServiceS: createBonusSubAMQP(BonusPlanRequest)
+
+        ServiceS -> RepoS:findNonBonusActiveSubscriptionByUserId(getUserId())
+        RepoS --> ServiceS: OK
+
+        ServiceS -> RepoS:findBonusActiveSubscriptionByUserId(getUserId())
+        RepoS --> ServiceS: empty
+
+
+
+               ServiceS -> Subscription**: create(CreatePlanRequest)
+               Subscription -->ServiceS:newBonusSub
+               ServiceS->RepoS: save(newBonusSub)
+
+
+               RepoS-->ServiceS: newBonusSub
+               ServiceS --> CtrlS: newBonusSub
+
+        CtrlS -> MB: publish{"sub.created.*, newBonusSub"}
+              CtrlS --> Ctrl: true
+        Ctrl -> MB: publish{"plan.created.*, plan"}
+        Ctrl --> User: 200 OK
+
+        ...
+
+        MB --> Ctrl:notify{plan}
+        MB --> CtrlS:notify{newBonusSub}
+
+
+@enduml

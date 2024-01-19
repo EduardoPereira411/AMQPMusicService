@@ -1,0 +1,29 @@
+@startuml
+'https://plantuml.com/sequence-diagram
+
+title BootstrapPlanQuery_N3
+
+autoactivate on
+autonumber
+
+box "PlanQuery"
+    participant ":AMQPSender" as Sender
+    note over Sender :on initialization
+    participant ":PlanRepository" as PlanRepo
+
+end box
+participant ":bootstrapPlans" as bootP
+
+participant ":messageBroker" as MB
+
+
+Sender -> MB: publish{"plan.bootstrap", "bootstrap.key"}
+MB --> bootP: notify{plans}
+bootP -> MB: plans
+MB--> Sender: plans
+Sender -> PlanRepo: saveAll(plans)
+PlanRepo--> Sender: ok
+
+
+
+@enduml

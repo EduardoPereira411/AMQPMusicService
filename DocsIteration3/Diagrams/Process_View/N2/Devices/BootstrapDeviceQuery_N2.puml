@@ -1,0 +1,25 @@
+@startuml
+'https://plantuml.com/sequence-diagram
+
+title Bootstrap Device Query N2
+
+autoactivate on
+autonumber
+
+participant ":DeviceQ" as DeviceQ
+participant ":bootstrapDevices" as bootD
+participant ":bootstrapSubscriptions" as bootS
+participant ":messageBroker" as MB
+
+note over DeviceQ: on initialization
+DeviceQ -> MB: publish{"device.bootstrap", "bootstrap.key"}
+MB --> bootD: notify{devices}
+bootD -> MB: devices
+MB--> DeviceQ: devices
+
+DeviceQ -> MB: publish{"subscription.bootstrap", "bootstrap.key"}
+MB --> bootS: notify{subscriptions}
+bootS -> MB: subscriptions
+MB--> DeviceQ: subscriptions
+
+@enduml

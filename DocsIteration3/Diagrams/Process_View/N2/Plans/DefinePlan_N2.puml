@@ -1,0 +1,41 @@
+
+@startuml
+'https://plantuml.com/sequence-diagram
+autoactivate on
+autonumber
+title Define Plan N2
+
+actor "MarketingDirector" as MarketingDirector
+participant ":PlansC" as PlansC
+participant ":PlansQ" as PlansQ
+participant ":SubscriptionsC" as SubscriptionsC
+participant ":SubscriptionsQ" as SubscriptionsQ
+
+participant ":DevicesC" as DevicesC
+
+participant ":MessageBroker" as MB
+
+activate MarketingDirector
+
+
+
+MarketingDirector -> PlansC: POST: api/plan body:CreatePlanRequest
+
+PlansC -> PlansC: create(plan)
+PlansC -> MB: publish{"plan.created.*, plan"}
+
+MB -> PlansQ:notify{plan}
+PlansQ --> PlansQ:create(plan)
+
+MB -> SubscriptionsC:notify{plan}
+SubscriptionsC --> SubscriptionsC:create(plan)
+
+MB -> SubscriptionsQ:notify{plan}
+SubscriptionsQ --> SubscriptionsQ:create(plan)
+
+MB -> DevicesC:notify{plan}
+DevicesC --> DevicesC:create(plan)
+
+PlansC --> MarketingDirector: 200 OK
+
+@enduml

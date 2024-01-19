@@ -1,0 +1,40 @@
+@startuml
+'https://plantuml.com/sequence-diagram
+autoactivate on
+autonumber
+title Change Plan Details N2
+
+actor "MarketingDirector" as MarketingDirector
+participant ":PlansC" as PlansC
+participant ":PlansQ" as PlansQ
+participant ":SubscriptionsC" as SubscriptionsC
+participant ":SubscriptionsQ" as SubscriptionsQ
+
+participant ":DevicesC" as DevicesC
+
+participant ":MessageBroker" as MB
+
+activate MarketingDirector
+
+
+
+MarketingDirector -> PlansC: PATCH /api/plan/{planName} body: editPlanRequest
+
+PlansC -> PlansC: update(plan)
+PlansC -> MB: publish{"plan.update.*, plan"}
+
+MB -> PlansQ:notify{plan}
+PlansQ --> PlansQ:update(plan)
+
+MB -> SubscriptionsC:notify{plan}
+SubscriptionsC --> SubscriptionsC:update(plan)
+
+MB -> SubscriptionsQ:notify{plan}
+SubscriptionsQ --> SubscriptionsQ:update(plan)
+
+MB -> DevicesC:notify{plan}
+DevicesC --> DevicesC:update(plan)
+
+PlansC --> MarketingDirector: 200 OK
+
+@enduml

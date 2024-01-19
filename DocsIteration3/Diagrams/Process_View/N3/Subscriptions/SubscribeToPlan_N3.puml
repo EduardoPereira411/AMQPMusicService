@@ -1,0 +1,55 @@
+@startuml
+'https://plantuml.com/sequence-diagram
+autoactivate on
+autonumber
+
+actor "NewUser" as NewUser
+box "SubscriptionC"
+    participant ":SubscriptionController" as Ctrl
+    participant ":SubscriptionService" as Service
+    participant ":Subscription" as Subscription
+    participant ":SubscriptionRepository" as Repo
+    participant ":PlanRepository" as PlanRepo
+    participant ":UserRepository" as UserRepo
+end box
+
+participant ":MessageBroker" as MB
+
+
+activate NewUser
+
+    NewUser -> Ctrl: POST: api/subscription body: HttpServletRequest , CreateSubscriptionRequest
+    Ctrl -> Service: create(request,planName,version)
+    Service -> Repo: getPlanByName(planName)
+    Repo --> Service: plan
+    Service -> Repo:findActiveSubscriptionsByUserIDLocal(userid)
+    Repo -> Repo: findActiveSubscriptionsByUserIDLocal(userid)
+    Repo --> Repo: sub
+    Repo --> Service: sub
+
+    Service -> UserRepo: getUserById(userid)
+    UserRepo --> Service: user
+
+    Service -> PlanRepo: getPlanByName(planName)
+    PlanRepo --> Service: plan
+
+    Service->Subscription**: create(paymentMode,planId, userid)
+    Subscription--> Service: sub
+
+
+    Service->Repo: save(sub)
+    Repo->Repo:save(sub)
+    Repo-->Repo:sub
+    Repo-->Service: sub
+    Service --> Ctrl: sub
+
+    Ctrl -> MB: publish{"sub.created.*, subscription"}
+    Ctrl -> MB: publish{"user.flip.*, userId"}
+
+    Ctrl --> NewUser: 201 OK sub
+
+    ...
+    MB --> Ctrl:notify{subscription}
+    Ctrl --> Ctrl: create(subscription)
+
+@enduml

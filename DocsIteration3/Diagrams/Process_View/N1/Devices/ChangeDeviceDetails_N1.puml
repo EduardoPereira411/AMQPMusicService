@@ -1,0 +1,17 @@
+@startuml
+'https://plantuml.com/sequence-diagram
+
+title Update Device
+
+autoactivate on
+autonumber
+
+actor "Subscriber" as Subscriber
+participant ":DeviceC" as DeviceC
+
+
+activate Subscriber
+
+Subscriber -> DeviceC: PATCH /api/device/{devId}
+DeviceC --> Subscriber: 200 OK
+@enduml

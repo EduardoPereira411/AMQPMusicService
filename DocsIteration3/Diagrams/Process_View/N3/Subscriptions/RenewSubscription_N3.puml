@@ -1,0 +1,46 @@
+@startuml
+'https://plantuml.com/sequence-diagram
+autoactivate on
+autonumber
+
+actor "Subscriber" as Subscriber
+box "SubscriptionC"
+    participant ":SubscriptionController" as Ctrl
+    participant ":SubscriptionService" as Service
+    participant ":Subscription" as Subscription
+    participant ":SubscriptionRepository" as Repo
+end box
+
+participant ":MessageBroker" as MB
+
+activate Subscriber
+
+
+Subscriber -> Ctrl: PATCH: api/subscription/renew
+Ctrl -> Service: renew(request,version)
+Service -> Repo:findActiveSubscriptionsByUserIDLocal(userid)
+Repo -> Repo: findActiveSubscriptionsByUserIDLocal(userid)
+Repo --> Repo: sub
+Repo --> Service: sub
+
+Service->Subscription: renew(version)
+Subscription--> Service: sub
+Service->Repo: save(sub)
+Repo->Repo:save(sub)
+Repo-->Repo:sub
+Repo-->Service: sub
+Service --> Ctrl: sub
+
+Ctrl -> MB: publish{"sub.updated.*, subscription"}
+
+Ctrl --> Subscriber: 200 OK sub
+...
+MB --> Ctrl:notify{subscription}
+Ctrl --> Ctrl:update(subscription)
+
+
+
+
+
+
+@enduml

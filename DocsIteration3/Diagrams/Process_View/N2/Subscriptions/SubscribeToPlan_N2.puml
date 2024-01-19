@@ -1,0 +1,22 @@
+@startuml
+'https://plantuml.com/sequence-diagram
+
+actor "Customer" as Customer
+participant ":SubscriptionsC" as SubscriptionsC
+
+
+participant ":MessageBroker" as MB
+
+Customer -> SubscriptionsC: POST: api/subscription
+
+
+SubscriptionsC --> SubscriptionsC: subscribePlan(subscription)
+SubscriptionsC -> MB: publish{"sub.created.*, subscription"}
+SubscriptionsC -> MB: publish{"user.flip.*, userId"}
+
+
+SubscriptionsC --> Customer: 201 Created
+...
+MB --> SubscriptionsC:notify{subscription}
+
+@enduml

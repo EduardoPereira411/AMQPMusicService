@@ -1,0 +1,14 @@
+@startuml
+'https://plantuml.com/sequence-diagram
+
+
+actor "Subscriber" as Subscriber
+participant ":SubscriptionQ" as SubscriptionQ
+
+Subscriber -> SubscriptionQ: GET: api/subscription
+SubscriptionQ -> SubscriptionQ: findPlanFromSub
+SubscriptionQ --> SubscriptionQ: plan
+
+SubscriptionQ --> Subscriber: 200 / plan
+
+@enduml

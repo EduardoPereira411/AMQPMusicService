@@ -1,0 +1,20 @@
+@startuml
+'https://plantuml.com/sequence-diagram
+
+actor "Subscriber" as Subscriber
+participant ":SubscriptionC" as SubscriptionC
+
+
+participant ":MessageBroker" as MB
+
+
+Subscriber -> SubscriptionC: PATCH /api/subscription/renew
+
+SubscriptionC --> SubscriptionC: update(subscription)
+SubscriptionC -> MB: publish{"sub.updated.*, subscription"}
+
+
+SubscriptionC --> Subscriber: 200 OK
+...
+MB --> SubscriptionC:notify{subscription}
+@enduml

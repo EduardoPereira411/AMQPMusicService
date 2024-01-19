@@ -1,0 +1,36 @@
+@startuml
+'https://plantuml.com/sequence-diagram
+autoactivate on
+autonumber
+title List Active Plans N3
+actor "user" as User
+
+box "Plan Query"
+    participant ":PlanController" as Ctrl
+    participant ":PlanService" as Service
+    participant ":Plan" as Plan
+    participant ":PlanRepository" as Repo
+end box
+
+
+
+activate User
+
+
+        User -> Ctrl: PATCH: api/plan/all/active
+        Ctrl -> Service: findAllActive()
+        Service -> Repo: findAllActivePlans()
+        Repo --> Service: plans
+
+
+
+
+
+        Service --> Ctrl: plans
+        Ctrl --> User: 200 OK plans
+
+
+
+
+
+@enduml

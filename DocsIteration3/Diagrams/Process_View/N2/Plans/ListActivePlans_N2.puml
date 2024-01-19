@@ -1,0 +1,16 @@
+@startuml
+'https://plantuml.com/sequence-diagram
+autoactivate on
+autonumber
+
+title List Active Plans N2
+
+actor "MarketingDirector" as MarketingDirector
+participant ":PlanQ" as PlanQ
+
+MarketingDirector -> PlanQ: GET: api/plan/all
+PlanQ -> PlanQ: findAllActivePlans
+
+PlanQ --> MarketingDirector: 200 / plans
+
+@enduml

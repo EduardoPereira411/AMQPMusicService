@@ -1,0 +1,31 @@
+@startuml
+'https://plantuml.com/sequence-diagram
+autoactivate on
+autonumber
+
+actor "Subscriber" as Subscriber
+box "SubscriptionQ"
+    participant ":SubscriptionController" as Ctrl
+    participant ":SubscriptionService" as Service
+    participant ":Subscription" as Subscription
+    participant ":SubscriptionRepository" as Repo
+    participant ":PlanRepository" as PlanRepo
+end box
+
+
+activate Subscriber
+
+    Subscriber -> Ctrl: Get: api/subscription/plan
+    Ctrl -> Service: getPlanFromSub(userId, planId)
+    Service -> Repo:findActiveSubscriptionsByUserIDLocal(userid)
+    Repo -> Repo: findActiveSubscriptionsByUserIDLocal(userid)
+    Repo --> Repo: sub
+    Repo --> Service: sub
+
+    Service -> PlanRepo: getPlanById(planId)
+    PlanRepo --> Service: plan
+
+    Service --> Ctrl: plan
+    Ctrl --> Subscriber: 200 OK plan
+
+@enduml

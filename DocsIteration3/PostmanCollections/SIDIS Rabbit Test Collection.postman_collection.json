@@ -1,0 +1,1779 @@
+{
+	"info": {
+		"_postman_id": "c7b380b1-d443-4b33-85ad-87fe84c8e482",
+		"name": "SIDIS Rabbit Test Collection",
+		"description": "This Test run should be executed with a clean database to verify that the application in working as intended",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "23433092"
+	},
+	"item": [
+		{
+			"name": "Login as Marketing",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Login as Marketing\", function(){\r",
+							"\r",
+							"    pm.response.to.have.status(200);\r",
+							"\r",
+							"    let token = postman.getResponseHeader(\"Authorization\");\r",
+							"    pm.environment.set(\"AuthenthicationMarketing\", token);\r",
+							"  \r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"username\":\"marketing@mail.com\",\r\n    \"password\": \"Password1\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{userCommand1Host}}/api/login",
+					"host": [
+						"{{userCommand1Host}}"
+					],
+					"path": [
+						"api",
+						"login"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "CreatePlan",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Create a Plan\", function(){\r",
+							"\r",
+							"    pm.response.to.have.status(201);\r",
+							"\r",
+							"    let etag = postman.getResponseHeader(\"ETag\");\r",
+							"    pm.environment.set(\"EtagPlan\", etag); \r",
+							"    var planID = pm.response.json().planID;\r",
+							"    pm.environment.set(\"planID\", planID);\r",
+							"});\r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "{{Bearer}}{{AuthenthicationMarketing}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"planName\": \"testPlan\",\r\n  \"minutes\": 1000,\r\n  \"monthlyFee\": 99.7,\r\n  \"annualFee\": 1000.8,\r\n  \"deviceNr\":6,\r\n  \"musicCollectionsNr\":1,\r\n  \"musicRecommendation\": \"automatic\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{planCommand1Host}}/api/plan/",
+					"host": [
+						"{{planCommand1Host}}"
+					],
+					"path": [
+						"api",
+						"plan",
+						""
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "CreateAlreadyExistingPlan",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Create Already Existing Plan\", function(){\r",
+							"\r",
+							"    pm.response.to.have.status(409);\r",
+							"\r",
+							"});\r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "{{Bearer}}{{AuthenthicationMarketing}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"planName\": \"testPlan\",\r\n  \"minutes\": 1000,\r\n  \"monthlyFee\": 99.7,\r\n  \"annualFee\": 1000.8,\r\n  \"deviceNr\":6,\r\n  \"musicCollectionsNr\":1,\r\n  \"musicRecommendation\": \"automatic\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{planCommand1Host}}/api/plan/",
+					"host": [
+						"{{planCommand1Host}}"
+					],
+					"path": [
+						"api",
+						"plan",
+						""
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "UpdatePlan",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Update a Plan\", function(){\r",
+							"\r",
+							"    pm.response.to.have.status(200);\r",
+							"\r",
+							"    let etag = postman.getResponseHeader(\"ETag\");\r",
+							"    pm.environment.set(\"EtagPlan\", etag); \r",
+							"});\r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "PATCH",
+				"header": [
+					{
+						"key": "If-Match",
+						"value": "{{EtagPlan}}",
+						"type": "text"
+					},
+					{
+						"key": "Authorization",
+						"value": "{{Bearer}}{{AuthenthicationMarketing}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"planName\": \"testPlan\",\r\n  \"minutes\": 2,\r\n  \"monthlyFee\": 9,\r\n  \"annualFee\": 10,\r\n  \"deviceNr\":7,\r\n  \"musicCollectionsNr\":1,\r\n  \"musicRecommendation\": \"automatic\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{planCommand1Host}}{{planbaseURL}}/testPlan",
+					"host": [
+						"{{planCommand1Host}}{{planbaseURL}}"
+					],
+					"path": [
+						"testPlan"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "UpdatePlan WrongEtag",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Update a Plan Wrong Etag\", function(){\r",
+							"\r",
+							"    pm.response.to.have.status(409);\r",
+							"\r",
+							"});\r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "PATCH",
+				"header": [
+					{
+						"key": "If-Match",
+						"value": "0",
+						"type": "text"
+					},
+					{
+						"key": "Authorization",
+						"value": "{{Bearer}}{{AuthenthicationMarketing}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"planName\": \"testPlan\",\r\n  \"minutes\": 2,\r\n  \"monthlyFee\": 9,\r\n  \"annualFee\": 10,\r\n  \"deviceNr\":7,\r\n  \"musicCollectionsNr\":1,\r\n  \"musicRecommendation\": \"automatic\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{planCommand1Host}}{{planbaseURL}}/testPlan",
+					"host": [
+						"{{planCommand1Host}}{{planbaseURL}}"
+					],
+					"path": [
+						"testPlan"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "GetPlanByName",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"See plan By Name\", function(){\r",
+							"\r",
+							"    pm.response.to.have.status(200);\r",
+							"\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{planQuery1Host}}{{planbaseURL}}/active/testPlan",
+					"host": [
+						"{{planQuery1Host}}{{planbaseURL}}"
+					],
+					"path": [
+						"active",
+						"testPlan"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "DeactivatePlan",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"DeactivatePlan\", function(){\r",
+							"\r",
+							"    pm.response.to.have.status(200);\r",
+							"\r",
+							"});\r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "PATCH",
+				"header": [
+					{
+						"key": "If-Match",
+						"value": "{{EtagPlan}}",
+						"type": "text"
+					},
+					{
+						"key": "Authorization",
+						"value": "{{Bearer}}{{AuthenthicationMarketing}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{planCommand1Host}}{{planbaseURL}}/deactivate/testPlan",
+					"host": [
+						"{{planCommand1Host}}{{planbaseURL}}"
+					],
+					"path": [
+						"deactivate",
+						"testPlan"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "GetAllActivePlans",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"See All Active Plans\", function(){\r",
+							"\r",
+							"    pm.response.to.have.status(200);\r",
+							"\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{planQuery2Host}}{{planbaseURL}}/all/active",
+					"host": [
+						"{{planQuery2Host}}{{planbaseURL}}"
+					],
+					"path": [
+						"all",
+						"active"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "GetPlanById",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"See Plan By ID\", function(){\r",
+							"\r",
+							"    pm.response.to.have.status(200);\r",
+							"\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{planQuery2Host}}{{planbaseURL}}/id/{{planID}}",
+					"host": [
+						"{{planQuery2Host}}{{planbaseURL}}"
+					],
+					"path": [
+						"id",
+						"{{planID}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "CreateBonusPlanForNonExistnetUser",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Create a Bonus Plan\", function(){\r",
+							"\r",
+							"    pm.response.to.have.status(500);\r",
+							"});\r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "{{Bearer}}{{AuthenthicationMarketing}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"planName\": \"bonusPlan\",\r\n  \"minutes\": 1000,\r\n  \"monthlyFee\": 99.7,\r\n  \"annualFee\": 1000.8,\r\n  \"deviceNr\":6,\r\n  \"musicCollectionsNr\":1,\r\n  \"musicRecommendation\": \"automatic\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{planCommand1Host}}/api/plan/f0a96f7c-ddec-480d-bbfd-1cd7cdb13a87",
+					"host": [
+						"{{planCommand1Host}}"
+					],
+					"path": [
+						"api",
+						"plan",
+						"f0a96f7c-ddec-480d-bbfd-1cd7cdb13a87"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Register regular User",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"\r",
+							"pm.test(\"Register as NewUser\", function(){\r",
+							"\r",
+							"    pm.response.to.have.status(201);\r",
+							"  \r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"username\":\"u11@mail.com\",\r\n    \"fullName\":\"boas\",\r\n    \"password\": \"Password1\",\r\n    \"rePassword\": \"Password1\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{userCommand2Host}}/api/register",
+					"host": [
+						"{{userCommand2Host}}"
+					],
+					"path": [
+						"api",
+						"register"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Login as New user",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Login as NewUser\", function(){\r",
+							"\r",
+							"    pm.response.to.have.status(200);\r",
+							"\r",
+							"    let token = postman.getResponseHeader(\"Authorization\");\r",
+							"    pm.environment.set(\"AuthenthicationNewUser\", token);\r",
+							"\r",
+							"    var responseBody = pm.response.json();\r",
+							"    var userId = responseBody.id;\r",
+							"    pm.environment.set(\"UserId\", userId);\r",
+							"  \r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"username\":\"u11@mail.com\",\r\n    \"password\": \"Password1\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{userCommand2Host}}/api/login",
+					"host": [
+						"{{userCommand2Host}}"
+					],
+					"path": [
+						"api",
+						"login"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "CreateBonusPlanForNonValidUser",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Create a Bonus Plan\", function(){\r",
+							"\r",
+							"    pm.response.to.have.status(500);\r",
+							"});\r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "{{Bearer}}{{AuthenthicationMarketing}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"planName\": \"bonusPlan\",\r\n  \"minutes\": 1000,\r\n  \"monthlyFee\": 99.7,\r\n  \"annualFee\": 1000.8,\r\n  \"deviceNr\":6,\r\n  \"musicCollectionsNr\":1,\r\n  \"musicRecommendation\": \"automatic\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{planCommand1Host}}/api/plan/{{UserId}}",
+					"host": [
+						"{{planCommand1Host}}"
+					],
+					"path": [
+						"api",
+						"plan",
+						"{{UserId}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "CreateSubscriptionInactivePlan",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Post Subscription to inactive plan\", function(){\r",
+							"\r",
+							"    pm.response.to.have.status(404); \r",
+							"  \r",
+							"    let etag = postman.getResponseHeader(\"ETag\");\r",
+							"    pm.environment.set(\"EtagSubscription\", etag); \r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "{{Bearer}}{{AuthenthicationNewUser}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"paymentMode\": \"Annual\",\r\n    \"planName\": \"testPlan\"\r\n }",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{subscriptionCommand1Host}}/api/subscription",
+					"host": [
+						"{{subscriptionCommand1Host}}"
+					],
+					"path": [
+						"api",
+						"subscription"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "CreateSubscription",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Post Valid Subscription\", function(){\r",
+							"\r",
+							"    pm.response.to.have.status(201); \r",
+							"  \r",
+							"    let etag = postman.getResponseHeader(\"ETag\");\r",
+							"    pm.environment.set(\"EtagSubscription\", etag); \r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "{{Bearer}}{{AuthenthicationNewUser}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"paymentMode\": \"Annual\",\r\n    \"planName\": \"Silver\"\r\n }",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{subscriptionCommand1Host}}/api/subscription",
+					"host": [
+						"{{subscriptionCommand1Host}}"
+					],
+					"path": [
+						"api",
+						"subscription"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "CreateSubscriptionForAlreadySubscribedUser",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Post Subscription for already subbed User\", function(){\r",
+							"\r",
+							"    pm.response.to.have.status(409); \r",
+							"  \r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "{{Bearer}}{{AuthenthicationNewUser}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"paymentMode\": \"Annual\",\r\n    \"planName\": \"Silver\"\r\n }",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{subscriptionCommand1Host}}/api/subscription",
+					"host": [
+						"{{subscriptionCommand1Host}}"
+					],
+					"path": [
+						"api",
+						"subscription"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Login as Subscriber",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Login as Subscriber\", function(){\r",
+							"\r",
+							"    pm.response.to.have.status(200);\r",
+							"\r",
+							"    let token = postman.getResponseHeader(\"Authorization\");\r",
+							"    pm.environment.set(\"AuthenthicationSubscriber\", token);\r",
+							"\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"username\":\"u11@mail.com\",\r\n    \"password\": \"Password1\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{userCommand2Host}}/api/login",
+					"host": [
+						"{{userCommand2Host}}"
+					],
+					"path": [
+						"api",
+						"login"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "CreateBonusPlan",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Create a Bonus Plan\", function(){\r",
+							"\r",
+							"    pm.response.to.have.status(201);\r",
+							"});\r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "{{Bearer}}{{AuthenthicationMarketing}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"planName\": \"bonusPlan\",\r\n  \"minutes\": 1000,\r\n  \"monthlyFee\": 99.7,\r\n  \"annualFee\": 1000.8,\r\n  \"deviceNr\":6,\r\n  \"musicCollectionsNr\":1,\r\n  \"musicRecommendation\": \"automatic\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{planCommand1Host}}/api/plan/{{UserId}}",
+					"host": [
+						"{{planCommand1Host}}"
+					],
+					"path": [
+						"api",
+						"plan",
+						"{{UserId}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "GetSubFromLoggedInUser",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Get Sub from logged in user\", function(){\r",
+							"\r",
+							"    pm.response.to.have.status(200); \r",
+							"  \r",
+							"    let etag = postman.getResponseHeader(\"ETag\");\r",
+							"    pm.environment.set(\"EtagSubscription\", etag); \r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "{{Bearer}}{{AuthenthicationSubscriber}}",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{subscriptionQuery1Host}}/api/subscription",
+					"host": [
+						"{{subscriptionQuery1Host}}"
+					],
+					"path": [
+						"api",
+						"subscription"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "GetAllSubscriptions",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"See all Subscriptions\", function(){\r",
+							"\r",
+							"    pm.response.to.have.status(200); \r",
+							"  \r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "{{Bearer}}{{AuthenthicationMarketing}}",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{subscriptionQuery1Host}}/api/subscription/all",
+					"host": [
+						"{{subscriptionQuery1Host}}"
+					],
+					"path": [
+						"api",
+						"subscription",
+						"all"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "GetPlanFromMySub",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Get Plan From logged in sub\", function(){\r",
+							"\r",
+							"    pm.response.to.have.status(200); \r",
+							"\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "{{Bearer}}{{AuthenthicationSubscriber}}",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{subscriptionQuery1Host}}/api/subscription/plan",
+					"host": [
+						"{{subscriptionQuery1Host}}"
+					],
+					"path": [
+						"api",
+						"subscription",
+						"plan"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "CreateNewDevice1",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Create a new device1\", function(){\r",
+							"\r",
+							"    pm.response.to.have.status(201); \r",
+							"  \r",
+							"  let etag = postman.getResponseHeader(\"ETag\");\r",
+							"    pm.environment.set(\"EtagDevice\", etag);\r",
+							"\r",
+							"var responseBody = pm.response.json();\r",
+							"var deviceId = responseBody.devID;\r",
+							"var mac =responseBody.mac;\r",
+							"pm.environment.set(\"DeviceId\", deviceId);\r",
+							"pm.environment.set(\"MAC\", mac);\r",
+							"});\r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "{{Bearer}}{{AuthenthicationSubscriber}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"mac\":\"3b-B3-JM-13-03-L1\",\r\n    \"designation\":\"nice\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{deviceCommand1Host}}/api/device",
+					"host": [
+						"{{deviceCommand1Host}}"
+					],
+					"path": [
+						"api",
+						"device"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "CreateNewDevice2",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Create a new device2\", function(){\r",
+							"\r",
+							"    pm.response.to.have.status(201); \r",
+							"  \r",
+							"});\r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "{{Bearer}}{{AuthenthicationSubscriber}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"mac\":\"3b-B3-JM-13-03-L2\",\r\n    \"designation\":\"nice\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{deviceCommand1Host}}/api/device",
+					"host": [
+						"{{deviceCommand1Host}}"
+					],
+					"path": [
+						"api",
+						"device"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "CreateAlreadyExistingDevice",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Create a new device2\", function(){\r",
+							"\r",
+							"    pm.response.to.have.status(409); \r",
+							"  \r",
+							"});\r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "{{Bearer}}{{AuthenthicationSubscriber}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"mac\":\"3b-B3-JM-13-03-L2\",\r\n    \"designation\":\"nice\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{deviceCommand1Host}}/api/device",
+					"host": [
+						"{{deviceCommand1Host}}"
+					],
+					"path": [
+						"api",
+						"device"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "CreateNewDevice3",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Create a new device2\", function(){\r",
+							"\r",
+							"    pm.response.to.have.status(201); \r",
+							"  \r",
+							"});\r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "{{Bearer}}{{AuthenthicationSubscriber}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"mac\":\"3b-B3-JM-13-03-L3\",\r\n    \"designation\":\"nice\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{deviceCommand1Host}}/api/device",
+					"host": [
+						"{{deviceCommand1Host}}"
+					],
+					"path": [
+						"api",
+						"device"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "CreateNewDeviceExceed",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Create a new device Exceed Nr allowed by plan\", function(){\r",
+							"\r",
+							"    pm.response.to.have.status(409); \r",
+							"  \r",
+							"});\r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "{{Bearer}}{{AuthenthicationSubscriber}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"mac\":\"3b-B3-JM-13-03-L1\",\r\n    \"designation\":\"nice\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{deviceCommand1Host}}/api/device",
+					"host": [
+						"{{deviceCommand1Host}}"
+					],
+					"path": [
+						"api",
+						"device"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "ChangePlanFromSub",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Change Plan from sub\", function(){\r",
+							"\r",
+							"    pm.response.to.have.status(200); \r",
+							"  \r",
+							"    let etag = postman.getResponseHeader(\"ETag\");\r",
+							"    pm.environment.set(\"EtagSubscription\", etag); \r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "PATCH",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "{{Bearer}}{{AuthenthicationSubscriber}}",
+						"type": "text"
+					},
+					{
+						"key": "If-Match",
+						"value": "{{EtagSubscription}}",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{subscriptionCommand1Host}}/api/subscription/plan/Gold",
+					"host": [
+						"{{subscriptionCommand1Host}}"
+					],
+					"path": [
+						"api",
+						"subscription",
+						"plan",
+						"Gold"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "ListAllDevicesLoggedInUser",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"List all devices logged in user\", function () {\r",
+							"\r",
+							"    pm.response.to.have.status(200); \r",
+							"  \r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "{{Bearer}}{{AuthenthicationSubscriber}}",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{deviceQuery1Host}}/api/device/all",
+					"host": [
+						"{{deviceQuery1Host}}"
+					],
+					"path": [
+						"api",
+						"device",
+						"all"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "GetDeviceByIdLoggedInUser",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Get Device By Id on logged in sub\", function(){\r",
+							"\r",
+							"    pm.response.to.have.status(200); \r",
+							"  \r",
+							"\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "{{Bearer}}{{AuthenthicationSubscriber}}",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{deviceQuery1Host}}{{deviceBaseURL}}/{{DeviceId}}",
+					"host": [
+						"{{deviceQuery1Host}}{{deviceBaseURL}}"
+					],
+					"path": [
+						"{{DeviceId}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "CountDeviceByLoggedInSub",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Count devices from sub\", function(){\r",
+							"\r",
+							"    pm.response.to.have.status(200); \r",
+							"  \r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "{{Bearer}}{{AuthenthicationSubscriber}}",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{deviceQuery1Host}}{{deviceBaseURL}}/count",
+					"host": [
+						"{{deviceQuery1Host}}{{deviceBaseURL}}"
+					],
+					"path": [
+						"count"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "GetDeviceByMacAddress",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"List all devices\", function(){\r",
+							"\r",
+							"    pm.response.to.have.status(200); \r",
+							"  \r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{deviceQuery1Host}}{{deviceBaseURL}}/MAC/{{MAC}}",
+					"host": [
+						"{{deviceQuery1Host}}{{deviceBaseURL}}"
+					],
+					"path": [
+						"MAC",
+						"{{MAC}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "UpdateDeviceLoggedInSub",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Update device designation\", function(){\r",
+							"\r",
+							"    pm.response.to.have.status(200); \r",
+							"  \r",
+							"    let etag = postman.getResponseHeader(\"ETag\");\r",
+							"    pm.environment.set(\"EtagDevice\", etag); \r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "PATCH",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "{{Bearer}}{{AuthenthicationSubscriber}}",
+						"type": "text"
+					},
+					{
+						"key": "If-Match",
+						"value": "0",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"designation\":\"maravilhoso\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{deviceCommand1Host}}/api/device/{{DeviceId}}",
+					"host": [
+						"{{deviceCommand1Host}}"
+					],
+					"path": [
+						"api",
+						"device",
+						"{{DeviceId}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "DeleteDeviceLoggedInSub",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Delete device from Sub\", function(){\r",
+							"\r",
+							"    pm.response.to.have.status(200); \r",
+							"  \r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "DELETE",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "{{Bearer}}{{AuthenthicationSubscriber}}",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{deviceCommand1Host}}/api/device/{{DeviceId}}",
+					"host": [
+						"{{deviceCommand1Host}}"
+					],
+					"path": [
+						"api",
+						"device",
+						"{{DeviceId}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "DeleteAllDevicesLoggedInSub",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Delete all devices from sub\", function(){\r",
+							"\r",
+							"    pm.response.to.have.status(200); \r",
+							"  \r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "DELETE",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "{{Bearer}}{{AuthenthicationSubscriber}}",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{deviceCommand1Host}}/api/device/delete",
+					"host": [
+						"{{deviceCommand1Host}}"
+					],
+					"path": [
+						"api",
+						"device",
+						"delete"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "CancelSubOfLoggedInUser",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Post Valid Subscription\", function(){\r",
+							"\r",
+							"    pm.response.to.have.status(200); \r",
+							"  \r",
+							"    let etag = postman.getResponseHeader(\"ETag\");\r",
+							"    pm.environment.set(\"EtagSubscription\", etag); \r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "PATCH",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "{{Bearer}}{{AuthenthicationSubscriber}}",
+						"type": "text"
+					},
+					{
+						"key": "If-Match",
+						"value": "{{EtagSubscription}}",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{subscriptionCommand1Host}}/api/subscription/cancel",
+					"host": [
+						"{{subscriptionCommand1Host}}"
+					],
+					"path": [
+						"api",
+						"subscription",
+						"cancel"
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "Bearer",
+			"value": "Bearer ",
+			"type": "string"
+		},
+		{
+			"key": "AuthenthicationMarketing",
+			"value": "eyJhbGciOiJSUzI1NiJ9.eyJpc3MiOiJleGFtcGxlLmlvIiwic3ViIjoiMTIzNDU2NzgtOTBhYi1jZGVmLTEyMzQtNTY3ODlhYmNkZWYwLG1hcmtldGluZ0BtYWlsLmNvbSIsImV4cCI6MTcwMTU2Njc4OSwiaWF0IjoxNzAxNTMwNzg5LCJyb2xlcyI6Ik1BUktFVElOR19ESVJFQ1RPUl9BRE1JTiJ9.Hj3E_K2k_pSt7F0VnejmlIgwkG6dV3qln-e3xgeBNJG1TzmVyOefP12l8cXSTVPas6GEsqHwioQJxKxR76UJ6tQqAq2t6DVLSfFM_jdttagJmbID4xz7vZRLqb4nJ1iaGPz40trqtQDINKNpvcHLoCuay4YjTCBp_47ntK6zHRfXrFx5c_kJNg3vQu6xkUNnEhqBNoKDM_1s8QZVsVZxZGZ-aYLV-0TQRE6EcL0yH4_dURETeLf9Bgoxt7zdkHaoAY73G7vFoO_nyzz1AwXCbS_zMrWA6n5wzwN_4jI1_FPlYxFQ_ypoFztGmF_3PceE3PwD3SLcScgs5Bn__szZqCm-14vAhAiWwMJfJ71qF9ETDH2p0ZfmYv1bmoBtyIEMyQNi9Plb73xQ8aJ764PC3EGFqOJ5apCSsaNc6cGvkJFfJcRpScewhk5Jd2SJ5LSikv8smrGyJd0jJfSmpzskeewRA_j2mMCRvT0Jv7EUYwS-o7PUVm7SuM4clmKxYTrNSvvcgtBta3lb1VhrnvC6t_9MjugiH06_BM0BSn9DjHBibwzcrwm47Fln6WV-1DYdDVzkEvcf829evn-6JSVfroYwROvXXVHzpzuu_d4PTx8SBt9lrBUFPg3ZWjVgKy4n3YzXjzSaQrlpwUHotB-9Lo2r0w9VlMSeq10GH-X1LXc",
+			"type": "string"
+		},
+		{
+			"key": "AuthenthicationNewUser",
+			"value": "eyJhbGciOiJSUzI1NiJ9.eyJpc3MiOiJleGFtcGxlLmlvIiwic3ViIjoiOTg3NjU0MzItMTBmZS1kY2JhLTk4NzYtNTQzMjEwZmVkY2JhLGRhbmllbEBtYWlsLmNvbSIsImV4cCI6MTcwMTMxNTc4MywiaWF0IjoxNzAxMjc5NzgzLCJyb2xlcyI6Ik5FV19VU0VSIn0.OrpCt7LpYBXM6Z40qluAzeaXAGvmhfB4YGTcUAV2Qgrg11d2Lq0oOZLHnzEgGg4j8Y86UIWt_7Thkeu1W_9wfDulUtQ-ebkmmFIP8L_zlPSnppPiXHjATIQORykBVxQ1K9FDUkvNj6cL8VkPUxzI0rFrUra8eGA8PsE2Xd0Ut1MCYb584YjamZo4KKP8qwe86JJqNxlYd8BwvzYaDYaLkZFUIywhS14Inwhumh59lgWCq7hIc-3tocmA4SmiPERNhBeUiiCNInUtpfFD6LISE8nS50I19aw3fv-tZc13AqoXQPDr1XO7bR9eqAg--Q2RtRmVEsZ7DeIaL2cz8AAjNOyS981fOb-wE5y1wB86UxTsPiIqjJ7ps6uvWZqCvMC7TUMAurXTjm1wNWs6HmXydxT5CR3Hy5g8g9N2ui02fz835xwysvvM8jn0HELhj44gH-MRX8VfWoWwyuB3xE5FpEq58T3cc6D5D_KK05yOY1xgDM2sqjiv9-KFBeVHvAWmzAag1atur2bVptLP0yaHEzymfuQx0OI5cffhG3NJBpMTCTkN4bu10qM81ESSrnKO1wiXcIYlCDvcFCKyjaKqo7XBsewqHFm034BZ0maKIYuIVagIsi953XvmA71DkXyMdF2O0TXGb6CWjYX6fC8BlpBzmE-z_HK9SwrNEto89rg",
+			"type": "string"
+		},
+		{
+			"key": "AuthenthicationSubscriber",
+			"value": "eyJhbGciOiJSUzI1NiJ9.eyJpc3MiOiJleGFtcGxlLmlvIiwic3ViIjoiMTE5MDExNGItYzkyZC00Nzg1LTliYTMtNGYyZDZjODI1MWQ2LHUxMEBtYWlsLmNvbSIsImV4cCI6MTcwMTM5NDg3OSwiaWF0IjoxNzAxMzU4ODc5LCJyb2xlcyI6IlNVQlNDUklCRVIifQ.C9hlTbZ_OybQXvEm61bD4LHvkOzfhlY2Vi5tuWxcx3n751Huc2c34O1pAeQCtUzcSs4ezgPXx2WaIsjLbPQuFOh7lh3VpRE7hxkhkZ8cnBC4WwbBG8BPF6Bn7OTaLJ3LUtXQ1fwmhJPYvxmSzz5ctgh2ZebYoP2dfuN4cOWSbXP41TCf1r3no_e2zUkx-6qKaPUmMNkNoLD_h9PtzBzd3VDbb854UjGE91H_9N4YW5Tmm0xv5Tp01-3eD32ymQfjsPgmxuv0OlQfBY8c557nHjaTXkuaMfFTyEOcjbZCSzxEH2CBoouRIJuI3Z-VzrkuKudCnxFIKg_it95DyDWurZnsuzyCdVoH3uCmi4XmwqIYUW8Dz382RfDCs929TJIxlq0N9Dw3-SZRH_7NTzHCRfC3Ulpe3fXYEPCzPEUO8s5h_6DqEMU7nDYrRQ9wtQZRFXzGG58L5l6Fc5m3JDOVMCgAPEO3szfzu2LeSExlP0PT9bETgbd4BR0h2ENYDnm_ZhDWQvPinC-HNrXATFAWT-MjragksB97OyXlVcAhwYfg9Me1AteDT-1jNJzuCOc4vOWBWDArbDORwRSG4xRcXgH4BuT-Nfn4JRy4xKgO6iph2uPhQno96dmGkvUWaFdCmZLDT5IuaV9sltzrIowufjmT56lENbTee7RUjXdB5G0",
+			"type": "string"
+		},
+		{
+			"key": "EtagSubscription",
+			"value": "0",
+			"type": "string"
+		},
+		{
+			"key": "EtagPlan",
+			"value": "0",
+			"type": "string"
+		},
+		{
+			"key": "EtagDevice",
+			"value": "0",
+			"type": "string"
+		},
+		{
+			"key": "planCommand1Host",
+			"value": "http://localhost:8100",
+			"type": "string"
+		},
+		{
+			"key": "planCommand2Host",
+			"value": "http://localhost:8110",
+			"type": "string"
+		},
+		{
+			"key": "planQuery1Host",
+			"value": "http://localhost:8120",
+			"type": "string"
+		},
+		{
+			"key": "planQuery2Host",
+			"value": "http://localhost:8130",
+			"type": "string"
+		},
+		{
+			"key": "planbaseURL",
+			"value": "/api/plan",
+			"type": "string"
+		},
+		{
+			"key": "planID",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "subscriptionCommand1Host",
+			"value": "http://localhost:8200",
+			"type": "string"
+		},
+		{
+			"key": "subscriptionCommand2Host",
+			"value": "http://localhost:8210",
+			"type": "string"
+		},
+		{
+			"key": "subscriptionQuery1Host",
+			"value": "http://localhost:8220",
+			"type": "string"
+		},
+		{
+			"key": "subscriptionQuery2Host",
+			"value": "http://localhost:8230",
+			"type": "string"
+		},
+		{
+			"key": "subscriptionBaseURL",
+			"value": "/api/subscription",
+			"type": "string"
+		},
+		{
+			"key": "userCommand1Host",
+			"value": "http://localhost:8300",
+			"type": "string"
+		},
+		{
+			"key": "userCommand2Host",
+			"value": "http://localhost:8310",
+			"type": "string"
+		},
+		{
+			"key": "deviceCommand1Host",
+			"value": "http://localhost:8400",
+			"type": "string"
+		},
+		{
+			"key": "deviceCommand2Host",
+			"value": "http://localhost:8410",
+			"type": "string"
+		},
+		{
+			"key": "deviceQuery1Host",
+			"value": "http://localhost:8420",
+			"type": "string"
+		},
+		{
+			"key": "deviceQuery2Host",
+			"value": "http://localhost:8430",
+			"type": "string"
+		},
+		{
+			"key": "deviceBaseURL",
+			"value": "/api/device",
+			"type": "string"
+		},
+		{
+			"key": "DeviceId",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "MAC",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "UserId",
+			"value": "",
+			"type": "string"
+		}
+	]
+}

@@ -1,0 +1,33 @@
+@startuml
+'https://plantuml.com/sequence-diagram
+autoactivate on
+autonumber
+
+actor "Subscriber" as Subscriber
+participant ":DevicesC" as DevicesC
+participant ":DevicesQ" as DevicesQ
+'/participant ":SubscriptionsQ" as SubscriptionsQ
+'/participant ":SubscriptionsC" as SubscriptionsC
+participant ":MessageBroker" as MB
+
+
+Subscriber -> DevicesC: DELETE: api/device/devID {device:devID}
+
+DevicesC -> DevicesC: deleteDevice(devID)
+DevicesC -> MB: publish{"device.deleted.*, device"}
+
+MB -> DevicesC:notify{device_deleted,device:devID}
+DevicesC -> DevicesC:deleteDevice(devID)
+
+MB -> DevicesQ:notify{device_deleted,device:devID}
+DevicesQ -> DevicesQ:deleteDevice(devID)
+
+'/MB -> SubscriptionsQ:notify{device_deleted,device:devID}
+'/SubscriptionsQ -> SubscriptionsQ:deleteDevice(devID)
+
+'/MB -> SubscriptionsC:notify{device_deleted,device:devID}
+'/SubscriptionsC -> SubscriptionsC:deleteDevice(devID)
+
+DevicesC --> Subscriber: 200 OK
+
+@enduml

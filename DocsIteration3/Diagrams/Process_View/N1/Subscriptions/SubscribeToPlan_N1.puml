@@ -1,0 +1,17 @@
+@startuml
+'https://plantuml.com/sequence-diagram
+
+title Subscribe to Plan N1
+
+autoactivate on
+autonumber
+
+actor "Customer" as Customer
+participant ":SubscriptionC" as SubscriptionC
+
+
+activate Customer
+
+Customer -> SubscriptionC: POST /api/subscription
+SubscriptionC --> Customer: 200 OK
+@enduml

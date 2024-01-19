@@ -1,0 +1,19 @@
+
+@startuml
+'https://plantuml.com/sequence-diagram
+
+title View Plan Subscription Details N1
+
+autoactivate on
+autonumber
+
+actor "Subscriber" as Subscriber
+participant ":SubscriptionQ" as SubscriptionQ
+
+
+
+activate Subscriber
+
+Subscriber -> SubscriptionQ: GET /api/subscription
+SubscriptionQ --> Subscriber: 200 OK
+@enduml

@@ -1,0 +1,40 @@
+@startuml
+'https://plantuml.com/sequence-diagram
+autoactivate on
+autonumber
+
+actor "Subscriber" as Subscriber
+
+box "DeviceC"
+    participant ":DeviceController" as Ctrl
+    participant ":DeviceService" as Service
+    participant ":Device" as Device
+    participant ":DeviceRepository" as Repo
+    participant ":SubscriptionRepository" as subRepo
+    participant ":MessageBroker" as MessageBroker
+end box
+participant "DeviceQ" as DeviceQ
+
+
+activate Subscriber
+
+        Subscriber -> Ctrl: POST: api/device/ body:HttpServletRequest, CreateDeviceRequest
+        Ctrl -> Service: create(resource, request)
+        Service -> subRepo:getSubInfoByUser (userID)
+        subRepo --> Service: sub
+        Service -> PlanRepo: getDeviceNrAllowedByPlan(planID)
+        PlanRepo --> Service: maxDeviceNrAllowed
+        Service -> Repo:countDeviceBySubscriptionUUID(SubID)
+        Repo --> Service: NrOfDevices
+        Service -> Device**: create(CreateDeviceRequest)
+        Device -->Service:device
+        Service->Repo: save(device)
+        Repo->Repo:save(device)
+        Repo-->Service: device
+        Service --> Ctrl: device
+        Ctrl -> MessageBroker:sendCreateDevice(device)
+        MessageBroker -> DevicesQ:notify{device_created, device}
+        DevicesQ -> DevicesQ:saveDevice(device)
+        Ctrl --> Subscriber: 201 Created
+
+@enduml

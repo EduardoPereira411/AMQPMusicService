@@ -1,0 +1,17 @@
+@startuml
+'https://plantuml.com/sequence-diagram
+
+title Creating Device
+
+autoactivate on
+autonumber
+
+actor "Subscriber" as Subscriber
+participant ":DeviceC" as DeviceC
+
+
+activate Subscriber
+
+Subscriber -> DeviceC: POST /api/device body:CreateDeviceRequest
+DeviceC --> Subscriber: 201 OK
+@enduml

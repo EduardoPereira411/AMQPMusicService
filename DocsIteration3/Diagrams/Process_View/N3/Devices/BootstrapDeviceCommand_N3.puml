@@ -1,0 +1,45 @@
+@startuml
+'https://plantuml.com/sequence-diagram
+
+title BootstrapDeviceCommand_N3
+
+autoactivate on
+autonumber
+
+box "DeviceCommand"
+    participant ":AMQPSender" as Sender
+    note over Sender :on initialization
+    participant ":DeviceRepository" as DeviceRepo
+    participant ":SubscriptionRepository" as SubRepo
+    participant ":PlanRepository" as planRepo
+
+end box
+participant ":bootstrapDevices" as bootD
+participant ":bootstrapSubscriptions" as bootS
+participant ":bootstrapPlans" as bootP
+
+participant ":messageBroker" as MB
+
+
+Sender -> MB: publish{"device.bootstrap", "bootstrap.key"}
+MB --> bootD: notify{devices}
+bootD -> MB: devices
+MB--> Sender: devices
+Sender -> DeviceRepo: saveAll(devices)
+DeviceRepo--> Sender: ok
+
+Sender -> MB: publish{"subscription.bootstrap", "bootstrap.key"}
+MB --> bootS: notify{subscriptions}
+bootS -> MB: subscriptions
+MB--> Sender: subscriptions
+Sender -> SubRepo: saveAll(subscriptions)
+SubRepo--> Sender: ok
+
+Sender -> MB: publish{"plan.bootstrap", "bootstrap.key"}
+MB --> bootP: notify{plans}
+bootP -> MB: plans
+MB--> Sender: plans
+Sender -> planRepo: saveAll(plans)
+planRepo--> Sender: ok
+
+@enduml

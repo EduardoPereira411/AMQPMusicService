@@ -1,0 +1,31 @@
+@startuml
+'https://plantuml.com/sequence-diagram
+autoactivate on
+autonumber
+
+actor "Subscriber" as Subscriber
+
+box "DeviceQ"
+    participant ":DeviceController" as Ctrl
+    participant ":DeviceService" as Service
+    participant ":Device" as Device
+    participant ":DeviceRepository" as Repo
+    participant ":SubscriptionRepository" as subRepo
+end box
+
+activate Subscriber
+
+
+        Subscriber -> Ctrl: GET: api/device/all body:HttpServletRequest
+        Ctrl -> Service: findAllFromSub(request)
+
+
+        Service -> subRepo:getSubInfoByUser (userID)
+        subRepo --> Service: sub
+
+        Service -> Repo: findAllBySubscriptionUUID(SubID)
+        Repo --> Service: devices
+        Service-->Ctrl: devices
+        Ctrl --> Subscriber: 200 OK devices
+
+@enduml

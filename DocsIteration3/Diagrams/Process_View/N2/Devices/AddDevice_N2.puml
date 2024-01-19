@@ -1,0 +1,37 @@
+@startuml
+'https://plantuml.com/sequence-diagram
+autoactivate off
+autonumber
+
+actor "Subscriber" as Subscriber
+participant ":DevicesC" as DevicesC
+participant ":DevicesQ" as DevicesQ
+'/participant ":SubscriptionsQ" as SubscriptionsQ
+'/participant ":SubscriptionsC" as SubscriptionsC
+participant ":MessageBroker" as MB
+
+
+
+
+Subscriber -> DevicesC: POST: api/device {device:MAC, device:designation,subID:subID}
+
+DevicesC -> DevicesC: saveDevice(MAC, designation,subID)
+DevicesC -> MB: publish{"device.created.*, device"}
+
+MB -> DevicesC:notify{device_created, device:MAC,device:designation,subID:subID}
+alt Device doesnt exist
+DevicesC -> DevicesC:saveDevice(MAC, designation,subID)
+else Device exists
+end
+MB -> DevicesQ:notify{device_created, device:MAC,device:designation,subID:subID}
+DevicesQ -> DevicesQ:saveDevice(MAC, designation,subID)
+
+'/MB -> SubscriptionsQ:notify{device_created, device:MAC,device:designation,subID:subID}
+'/SubscriptionsQ -> SubscriptionsQ:saveDevice(MAC, designation,subID)
+
+'/MB -> SubscriptionsC:notify{device_created, device:MAC,device:designation,subID:subID}
+'/SubscriptionsC -> SubscriptionsC:saveDevice(MAC, designation,subID)
+
+DevicesC --> Subscriber: 201 Created
+
+@enduml

@@ -1,0 +1,56 @@
+@startuml
+title "Component Diagram N2"
+
+component "<< System >>  " {
+  [Plans]
+  Port "Pq"
+  Port "Pc"
+
+  [Subscriptions]
+  Port "Sq"
+  Port "Sc"
+
+  [Devices]
+  Port "Dq"
+  Port "Dc"
+
+  [Users]
+  Port "Uq"
+  Port "Uc"
+
+  [MessageBroker] -- Publish_API
+
+}
+
+
+API_Rest_PlansQ -- "Pq"
+"Pq" -- [Plans]
+API_Rest_PlansC -- "Pc"
+"Pc" -- [Plans]
+
+API_Rest_DevicesQ -- "Dq"
+"Dq" -- [Devices]
+API_Rest_DevicesC -- "Dc"
+"Dc" -- [Devices]
+
+API_Rest_SubscriptionsQ -- "Sq"
+"Sq" -- [Subscriptions]
+API_Rest_SubscriptionsC -- "Sc"
+"Sc" -- [Subscriptions]
+
+API_Rest_UsersQ -- "Uq"
+"Uq" -- [Users]
+API_Rest_UsersC -- "Uc"
+"Uc" -- [Users]
+
+
+[Plans] --(0-- [MessageBroker] : Notify API
+[Subscriptions] --(0-- [MessageBroker] : Notify API
+[Devices] --(0-- [MessageBroker] : Notify API
+[Users] --(0-- [MessageBroker] : Notify API
+[Plans] -( Publish_API
+[Subscriptions] -( Publish_API
+[Devices] -( Publish_API
+[Users] -( Publish_API
+
+@enduml

@@ -1,0 +1,36 @@
+@startuml
+'https://plantuml.com/sequence-diagram
+
+title BootstrapDeviceQuery_N3
+
+autoactivate on
+autonumber
+
+box "DeviceQuery"
+    participant ":AMQPSender" as Sender
+    note over Sender :on initialization
+    participant ":DeviceRepository" as DeviceRepo
+    participant ":SubscriptionRepository" as SubRepo
+
+end box
+participant ":bootstrapDevices" as bootD
+participant ":bootstrapSubscriptions" as bootS
+
+participant ":messageBroker" as MB
+
+
+Sender -> MB: publish{"device.bootstrap", "bootstrap.key"}
+MB --> bootD: notify{devices}
+bootD -> MB: devices
+MB--> Sender: devices
+Sender -> DeviceRepo: saveAll(devices)
+DeviceRepo--> Sender: ok
+
+Sender -> MB: publish{"subscription.bootstrap", "bootstrap.key"}
+MB --> bootS: notify{subscriptions}
+bootS -> MB: subscriptions
+MB--> Sender: subscriptions
+Sender -> SubRepo: saveAll(subscriptions)
+SubRepo--> Sender: ok
+
+@enduml
